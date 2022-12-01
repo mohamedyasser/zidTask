@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreItemRequest;
+use App\Http\Requests\UpdateItemRequest;
 use App\Models\Item;
 use App\Serializers\ItemSerializer;
 use App\Serializers\ItemsSerializer;
@@ -18,23 +20,9 @@ class ItemController extends Controller
         return JsonResponse::create(['items' => (new ItemsSerializer($items))->getData()]);
     }
 
-    public function store(Request $request)
+    public function store(StoreItemRequest $request)
     {
-        $this->validate($request, [
-          'name' => 'required|string|max:255',
-          'price' => 'required|numeric',
-           'url' => 'required|url',
-          'description' => 'required|string',
-        ]);
-
-        $converter = new CommonMarkConverter(['html_input' => 'escape', 'allow_unsafe_links' => false]);
-
-        $item = Item::create([
-            'name' => $request->get('name'),
-            'price' => $request->get('price'),
-            'url' => $request->get('url'),
-            'description' => $converter->convert($request->get('description'))->getContent(),
-        ]);
+        $item = Item::create($request->validated());
 
         $serializer = new ItemSerializer($item);
 
@@ -48,22 +36,9 @@ class ItemController extends Controller
         return new JsonResponse(['item' => $serializer->getData()]);
     }
 
-    public function update(Request $request, Item $item): JsonResponse
+    public function update(UpdateItemRequest $request, Item $item): JsonResponse
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'url' => 'required|url',
-            'description' => 'required|string',
-        ]);
-
-        $converter = new CommonMarkConverter(['html_input' => 'escape', 'allow_unsafe_links' => false]);
-
-        $item->name = $request->get('name');
-        $item->url = $request->get('url');
-        $item->price = $request->get('price');
-        $item->description = $converter->convert($request->get('description'))->getContent();
-        $item->save();
+        $item->fill($request->validated())->save();
 
         return new JsonResponse(
             [
