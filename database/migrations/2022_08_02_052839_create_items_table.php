@@ -15,6 +15,7 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->string('provider')->index();
             $table->string('name');
             $table->double('price', 15, 8);
             $table->string('url');

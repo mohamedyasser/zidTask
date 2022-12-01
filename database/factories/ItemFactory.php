@@ -21,6 +21,7 @@ class ItemFactory extends Factory
         return $this->state(function () {
             return [
                 'url' => 'https://amazon.com/' . $this->faker->numberBetween(1000, 999999),
+                'provider' => 'amazon.com',
             ];
         });
     }
@@ -30,6 +31,7 @@ class ItemFactory extends Factory
         return $this->state(function () {
             return [
                 'url' => 'https://steampowered.com/app/' . $this->faker->numberBetween(1000, 999999),
+                'provider' => 'steampowered.com',
             ];
         });
     }
@@ -39,6 +41,7 @@ class ItemFactory extends Factory
         return $this->state(function () {
             return [
                 'url' => 'https://zid.store/products/' . $this->faker->uuid(),
+                'provider' => 'zid.store',
             ];
         });
     }

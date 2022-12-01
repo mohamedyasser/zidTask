@@ -29,15 +29,17 @@ class UpdateItemRequest extends FormRequest
             'price' => 'required|numeric',
             'url' => 'required|url',
             'description' => 'required|string',
+            'provider' => 'required|string',
         ];
     }
 
-    protected function passedValidation()
+    protected function prepareForValidation()
     {
         $this->merge([
             'description' => (new CommonMarkConverter(['html_input' => 'escape', 'allow_unsafe_links' => false]))
                 ->convert($this->description)
                 ->getContent(),
+            'provider' => parse_url($this->url, PHP_URL_HOST),
         ]);
     }
 }

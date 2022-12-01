@@ -16,5 +16,6 @@ class Item extends Model
         'price',
         'url',
         'description',
+        'provider'
     ];
 }
