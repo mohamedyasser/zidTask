@@ -41,16 +41,14 @@ class ItemController extends Controller
         return new JsonResponse(['item' => $serializer->getData()]);
     }
 
-    public function show($id)
+    public function show(Item $item)
     {
-        $item = Item::findOrFail($id);
-
         $serializer = new ItemSerializer($item);
 
         return new JsonResponse(['item' => $serializer->getData()]);
     }
 
-    public function update(Request $request, int $id): JsonResponse
+    public function update(Request $request, Item $item): JsonResponse
     {
         $this->validate($request, [
             'name' => 'required|string|max:255',
@@ -61,7 +59,6 @@ class ItemController extends Controller
 
         $converter = new CommonMarkConverter(['html_input' => 'escape', 'allow_unsafe_links' => false]);
 
-        $item = Item::findOrFail($id);
         $item->name = $request->get('name');
         $item->url = $request->get('url');
         $item->price = $request->get('price');
