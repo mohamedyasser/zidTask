@@ -31,4 +31,11 @@ class ItemController extends Controller
 
         return ItemResource::make($item);
     }
+
+    public function statistics()
+    {
+        return response()->json([
+            'data' => Item::statistics()
+        ]);
+    }
 }
