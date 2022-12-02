@@ -8,11 +8,13 @@ class ItemFactory extends Factory
 {
     public function definition()
     {
+        $url = $this->faker->url();
         return [
             'name' => $this->faker->words(4, true),
             'price' => $this->faker->numberBetween(10.00, 9999.99),
             'url' => $this->faker->url(),
             'description' => $this->faker->paragraphs(5, true),
+            'provider' => parse_url($url, PHP_URL_HOST),
         ];
     }
 
