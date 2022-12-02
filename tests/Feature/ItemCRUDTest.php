@@ -21,8 +21,8 @@ class ItemCRUDTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertJson(function (AssertableJson $json) {
-            $json->has('items')->etc();
-            $json->has('items.0', function (AssertableJson $json) {
+            $json->has('data')->etc();
+            $json->has('data.0', function (AssertableJson $json) {
                 $json
                     ->whereType('id', 'integer')
                     ->whereType('name', 'string')
@@ -41,6 +41,7 @@ class ItemCRUDTest extends TestCase
             'price' => 12300.45,
             'url' => 'https://example.zid.store/a3fc9978-51b9-334e-bc79-c4607c4e988e',
             'description' => 'Test description',
+            'provider' => 'zid.store',
         ];
 
         $item = Item::factory()->create($attributes);
@@ -49,7 +50,7 @@ class ItemCRUDTest extends TestCase
 
         $response->assertStatus(200);
 
-        $responseItem = $response->json()['item'];
+        $responseItem = $response->json()['data'];
 
         $this->assertSame($item->id, $responseItem['id']);
         $this->assertSame($attributes['name'], $responseItem['name']);
@@ -65,9 +66,10 @@ class ItemCRUDTest extends TestCase
             'price' => 12345,
             'url' => 'https://store.example.com/my-product',
             'description' => 'Test **item** description',
+            'provider' => 'example.com',
         ]);
 
-        $this->assertSame('New item', $response->json()['item']['name']);
+        $this->assertSame('New item', $response->json()['data']['name']);
 
         $this->assertDatabaseHas(Item::class, [
             'name' => 'New item',
@@ -100,10 +102,10 @@ class ItemCRUDTest extends TestCase
             'description' => 'Test _item_ description',
         ]);
 
-        $this->assertSame('Updated title', $response->json()['item']['name']);
+        $this->assertSame('Updated title', $response->json()['data']['name']);
         $this->assertSame(
             '<p>Test <em>item</em> description</p>',
-            $response->json()['item']['description']
+            $response->json()['data']['description']
         );
 
         $this->assertDatabaseHas(Item::class, [
