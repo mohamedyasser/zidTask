@@ -19,16 +19,37 @@ class Item extends Model
         'provider'
     ];
 
-    public static function statistics(): array
+    public static function statistics(string $type): array
     {
-        return [
-            'total' => self::count(),
-            'average_price' => self::average('price'),
-            'highest_total_price' => self::groupBy('provider')
-                ->selectRaw('sum(price) as total, provider')->orderBy('total', 'desc')
-                ->first()->toArray(),
-            'total_price_month' => self::whereMonth('created_at', now()->month)
-                ->selectRaw('sum(price) as total')->first()->total,
-        ];
+        $statistics = [];
+        switch ($type) {
+            case 'total':
+                $statistics['total'] = self::count();
+                break;
+            case 'average':
+                $statistics['average'] = self::average('price');
+                break;
+            case 'highest':
+                $statistics['highest'] = self::groupBy('provider')
+                    ->selectRaw('sum(price) as total, provider')->orderBy('total', 'desc')
+                    ->first()->toArray();
+                break;
+            case 'monthly':
+                $statistics['month'] = self::whereMonth('created_at', now()->month)
+                    ->selectRaw('sum(price) as total')->first()->total;
+                break;
+            default:
+                $statistics = [
+                    'total' => self::count(),
+                    'average' => self::average('price'),
+                    'highest' => self::groupBy('provider')
+                        ->selectRaw('sum(price) as total, provider')->orderBy('total', 'desc')
+                        ->first()->toArray(),
+                    'monthly' => self::whereMonth('created_at', now()->month)
+                        ->selectRaw('sum(price) as total')->first()->total,
+                ];
+        }
+
+        return $statistics;
     }
 }

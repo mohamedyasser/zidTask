@@ -35,7 +35,7 @@ class ItemController extends Controller
     public function statistics()
     {
         return response()->json([
-            'data' => Item::statistics()
+            'data' => Item::statistics('all')
         ]);
     }
 }
