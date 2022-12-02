@@ -6,7 +6,6 @@ use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
 use App\Http\Resources\ItemResource;
 use App\Models\Item;
-use Illuminate\Http\JsonResponse;
 
 class ItemController extends Controller
 {
@@ -25,7 +24,7 @@ class ItemController extends Controller
         return ItemResource::make($item);
     }
 
-    public function update(UpdateItemRequest $request, Item $item): JsonResponse
+    public function update(UpdateItemRequest $request, Item $item)
     {
         $item->fill($request->validated())->save();
 
